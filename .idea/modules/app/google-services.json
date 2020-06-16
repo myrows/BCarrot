@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "690789377578",
+    "firebase_url": "https://bcarrot-6b6b7.firebaseio.com",
+    "project_id": "bcarrot-6b6b7",
+    "storage_bucket": "bcarrot-6b6b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:690789377578:android:3a72f5275c1fa6ba468553",
+        "android_client_info": {
+          "package_name": "com.example.bcarrot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "690789377578-q751ep254h7f0b0vqmf3q07u20b19heq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bcarrot",
+            "certificate_hash": "ea28b6682143c027668b53816ec9fb85c39a4175"
+          }
+        },
+        {
+          "client_id": "690789377578-91s3mlkiouol20gufptnqr6a3v5v7orr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrSaJkVRTMG8JFAau9zrgWBS-x0JTWQuI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "690789377578-91s3mlkiouol20gufptnqr6a3v5v7orr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
