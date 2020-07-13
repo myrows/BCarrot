@@ -21,9 +21,7 @@ import kotlin.collections.ArrayList
 class MyItemRecyclerViewAdapter() : RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder>() {
     private var listNameDevices : List<BluetoothDevice> = ArrayList<BluetoothDevice>()
     lateinit var ctx : Context
-    lateinit var textToSpeech: TextToSpeech
     lateinit var myBluetoothAdapter : BluetoothAdapter
-    lateinit var device : BluetoothDevice
 
     companion object {
         var APP_NAME : String = "BCarrot"
@@ -41,11 +39,6 @@ class MyItemRecyclerViewAdapter() : RecyclerView.Adapter<MyItemRecyclerViewAdapt
 
         ctx = parent.context
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        /*textToSpeech= TextToSpeech(ctx, TextToSpeech.OnInitListener {
-            if ( it == TextToSpeech.SUCCESS ) {
-                textToSpeech.language = Locale.getDefault()
-            }
-        })*/
 
         return ViewHolder(view)
     }
@@ -54,13 +47,12 @@ class MyItemRecyclerViewAdapter() : RecyclerView.Adapter<MyItemRecyclerViewAdapt
         val item = listNameDevices[position]
 
         holder.textDeviceName.text = item.name
-        device = item
+
 
         holder.itemView.setOnClickListener {
             var intentDeviceActivity : Intent = Intent ( ctx, ConnectDeviceActivity::class.java )
-            intentDeviceActivity.putExtra("deviceB", device)
+            intentDeviceActivity.putExtra("deviceBcarrot", item.address)
             ctx.startActivity( intentDeviceActivity )
-            //textToSpeech.speak("Dispositivo conectado", TextToSpeech.QUEUE_FLUSH, null)
         }
 
     }

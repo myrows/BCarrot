@@ -2,6 +2,7 @@ package com.example.bcarrot
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.DialogInterface
 import android.content.Intent
@@ -34,6 +35,7 @@ class ConnectDeviceActivity : AppCompatActivity() {
     lateinit var rewardedAd : RewardedAd
     lateinit var paypalConfiguration : PayPalConfiguration
     lateinit var clientClass : ClientClass
+    lateinit var myBluetoothAdapter : BluetoothAdapter
 
     companion object {
         var stop = R.string.stop
@@ -59,10 +61,11 @@ class ConnectDeviceActivity : AppCompatActivity() {
                 textToSpeech.language = Locale.getDefault()
             }
         })*/
-
+        myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        var addressDevice : String = intent.extras!!.get("deviceBcarrot").toString()
+        var device = myBluetoothAdapter.getRemoteDevice(addressDevice)
         // Client connection
-        var item = intent.extras!!.get("deviceB") as BluetoothDevice
-        clientClass = ClientClass( item, handler )
+        clientClass = ClientClass( device, handler )
         clientClass.start()
 
         // Car actions
@@ -78,11 +81,9 @@ class ConnectDeviceActivity : AppCompatActivity() {
         imageViewDerecha.setOnClickListener {
             clientClass.sendData("El vehículo gira a la derecha")
         }
-
-        if (bCoinLogic.checkBcoinsVoice()) {
             imageViewVoice.setOnClickListener {
                 // Pay Bcoins
-                bCoinLogic.payBCoins( 300 )
+                //bCoinLogic.payBCoins( 300 )
                 var intent : Intent = Intent( RecognizerIntent.ACTION_RECOGNIZE_SPEECH )
                 intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE_MODEL , RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault() )
@@ -95,7 +96,6 @@ class ConnectDeviceActivity : AppCompatActivity() {
                     Log.d("Voice", "Ha ocurrido un error - ${e.message}")
                 }
             }
-        }
     }
 
     //  Receive data of connected device
@@ -202,6 +202,7 @@ class ConnectDeviceActivity : AppCompatActivity() {
     private fun closeSession() {
         floatingActionButtonBluetoothDisconnect.setOnClickListener {
             onBackPressed()
+            clientClass.cancel()
         }
     }
 
