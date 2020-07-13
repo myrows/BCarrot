@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menu_navigation"
+    app:startDestination="@+id/navigation_home"
+    tools:ignore="UnusedNavigation">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.bcarrot.UserOperationsFragment"
+        android:label="UserOperations" />
+
+    <activity
+        android:id="@+id/navigation_car"
+        android:name="com.example.bcarrot.ConnectDeviceActivity"
+        android:label="ConnectDevice"/>
+
+</navigation>

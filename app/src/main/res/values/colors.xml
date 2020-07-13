@@ -6,4 +6,6 @@
     <color name="orangeCarrot">#F98B52</color>
     <color name="backgroundColor">#253A4B</color>
     <color name="white">#FFFF</color>
+    <color name="errorForm">#de3554</color>
+    <color name="disabled">#4C4C4C</color>
 </resources>

@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_login"
-    tools:context=".Login">
+    tools:context=".register.Login">
 
     <ImageButton
-        android:id="@+id/button"
+        android:id="@+id/buttonGoogleLogin"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_marginTop="10dp"
@@ -41,7 +41,7 @@
         android:ems="10"
         android:fontFamily="@font/thin"
         android:gravity="center"
-        android:hint="Usuario"
+        android:hint="Email"
         android:inputType="textEmailAddress"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
@@ -106,5 +106,29 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_arrow"
         tools:ignore="VectorDrawableCompat" />
+
+    <TextView
+        android:id="@+id/textViewPasswordError"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/regular"
+        android:text="@string/formPassword"
+        android:textColor="@color/errorForm"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/editTextPassword"
+        app:layout_constraintStart_toStartOf="@+id/editTextPassword"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+
+    <TextView
+        android:id="@+id/textViewEmailError"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/regular"
+        android:text="@string/formEmail"
+        android:textColor="@color/errorForm"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/editTextEmail"
+        app:layout_constraintStart_toStartOf="@+id/editTextEmail"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

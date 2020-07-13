@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_login"
-    tools:context=".Register">
+    tools:context=".register.Register">
 
     <ImageButton
         android:id="@+id/buttonR"
@@ -106,5 +106,29 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_arrow"
         tools:ignore="VectorDrawableCompat" />
+
+    <TextView
+        android:id="@+id/textViewPasswordErrorRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/regular"
+        android:text="@string/formPassword"
+        android:textColor="@color/errorForm"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/editTextPasswordRegister"
+        app:layout_constraintStart_toStartOf="@+id/editTextPasswordRegister"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordRegister" />
+
+    <TextView
+        android:id="@+id/textViewEmailErrorRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/regular"
+        android:text="@string/formEmail"
+        android:textColor="@color/errorForm"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/editTextEmailRegister"
+        app:layout_constraintStart_toStartOf="@+id/editTextEmailRegister"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmailRegister" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

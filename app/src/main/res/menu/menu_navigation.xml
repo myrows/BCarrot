@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:checked="true"
+        android:enabled="true"
+        android:icon="@drawable/ic_home"
+        android:title="@string/home"
+        android:visible="true"
+        app:cnb_backgroundColor="@color/orangeCarrot"
+        app:cnb_iconColor="#FFFF"
+        app:cnb_iconTintMode="src_in"
+        app:cnb_textColor="#FFFF" />
+    <item
+        android:id="@+id/car"
+        android:icon="@drawable/ic_car"
+        app:cnb_iconColor="#FFFF"
+        app:cnb_backgroundColor="@color/orangeCarrot"
+        app:cnb_iconTintMode="src_in"
+        app:cnb_textColor="#FFFF"
+        android:title="@string/car" />
+    <item
+        android:id="@+id/premium"
+        android:icon="@drawable/ic_premium"
+        android:title="@string/premium"
+        app:cnb_backgroundColor="@color/orangeCarrot"
+        app:cnb_iconColor="#FFFF"
+        app:cnb_iconTintMode="src_in"
+        app:cnb_textColor="#FFFF" />
+</menu>

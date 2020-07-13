@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">BCarrot</string>
+    <string name="formPassword">El campo \'Contraseña\' está vacío</string>
+    <string name="formEmail">El campo \'Email\' está vacío</string>
+    <string name="stop">El vehículo va a parar</string>
+    <string name="accelerate">El vehículo va a acelerar</string>
+    <string name="left">El vehículo gira a la izquierda</string>
+    <string name="right">El vehículo gira a la derecha</string>
+    <string name="car">Vehículo</string>
+    <string name="home">Inicio</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save">Guardar</string>
+    <string name="yourVehicle">Tu vehículo</string>
+    <string name="model">Modelo</string>
+    <string name="colour">Color</string>
+    <string name="plate">Matrícula</string>
+    <string name="banner_ad_unit_id">ca-app-pub-4204713758500577~5237010154</string>
+    <string name="premium">Premium</string>
+    <string name="clientId">AY-n12eO2hv-b7sXLRWvF_nfn36JY-R7aCiQQL4rLf_gIDBBHC9EESlC0gKVAwqR6nmPf7qYo6XoqNyK</string>
 </resources>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_my_vehicle"
+    tools:context=".VehicleFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/editTextVehicle"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/form_login"
+            android:ems="10"
+            android:fontFamily="@font/thin"
+            android:gravity="center"
+            android:hint="BMW X6"
+            android:inputType="textPersonName"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewModel" />
+
+        <EditText
+            android:id="@+id/editTextColour"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/form_login"
+            android:ems="10"
+            android:fontFamily="@font/thin"
+            android:gravity="center"
+            android:hint="Blanco"
+            android:inputType="textPersonName"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            app:layout_constraintEnd_toEndOf="@+id/editTextVehicle"
+            app:layout_constraintStart_toStartOf="@+id/editTextVehicle"
+            app:layout_constraintTop_toBottomOf="@+id/textViewColour" />
+
+        <EditText
+            android:id="@+id/editTextPlate"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/matricula"
+            android:ems="10"
+            android:fontFamily="@font/regular"
+            android:gravity="center"
+            android:hint="3456 CXT"
+            android:inputType="textPersonName"
+            android:textAllCaps="true"
+            android:textColor="@color/backgroundColor"
+            android:textColorHint="@color/backgroundColor"
+            app:layout_constraintEnd_toEndOf="@+id/editTextColour"
+            app:layout_constraintStart_toStartOf="@+id/editTextColour"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPlate" />
+
+        <Button
+            android:id="@+id/buttonSaveCar"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/button"
+            android:fontFamily="@font/regular"
+            android:text="@string/save"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/editTextPlate"
+            app:layout_constraintStart_toStartOf="@+id/editTextPlate"
+            app:layout_constraintTop_toBottomOf="@+id/editTextPlate" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationSuccess"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/buttonSaveCar"
+            app:layout_constraintStart_toStartOf="@+id/buttonSaveCar"
+            app:layout_constraintTop_toBottomOf="@+id/buttonSaveCar"
+            app:lottie_autoPlay="false"
+            app:lottie_loop="false"
+            app:lottie_rawRes="@raw/loading_success" />
+
+        <TextView
+            android:id="@+id/textViewModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/regular"
+            android:text="@string/model"
+            android:textAllCaps="false"
+            android:textColor="@color/orangeCarrot"
+            app:layout_constraintStart_toStartOf="@+id/editTextVehicle"
+            app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+    <TextView
+        android:id="@+id/textViewColour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/regular"
+        android:text="@string/colour"
+        android:textColor="@color/orangeCarrot"
+        app:layout_constraintStart_toStartOf="@+id/editTextVehicle"
+        app:layout_constraintTop_toBottomOf="@+id/editTextVehicle" />
+
+    <TextView
+        android:id="@+id/textViewPlate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/regular"
+        android:text="@string/plate"
+        android:textColor="@color/orangeCarrot"
+        app:layout_constraintStart_toStartOf="@+id/editTextColour"
+        app:layout_constraintTop_toBottomOf="@+id/editTextColour" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
