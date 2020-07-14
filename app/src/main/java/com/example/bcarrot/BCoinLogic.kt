@@ -94,31 +94,6 @@ class BCoinLogic {
 
     }
 
-    fun checkBcoinsVoice () : Boolean {
-        var hasBcoins : Boolean = false
-
-        db.collection("users")
-            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    var data : MutableMap<String, Any> = document.data
-                    coins = data.getValue("bcoins") as Long
-                    if ( coins >= 300 ) {
-                        hasBcoins = true
-                    }
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(
-                    "Query",
-                    "Error getting documents: ",
-                    exception
-                )
-            }
-        return hasBcoins
-    }
-
     fun getUserBcoins () : Long {
         var bCoins : Long = 0
         var result : Long = 0
@@ -155,7 +130,7 @@ class BCoinLogic {
                 for (document in documents) {
                     var data : MutableMap<String, Any> = document.data
                     var isPremium = data.getValue("premium") as Boolean
-                    if ( !isPremium) {
+                    if ( !isPremium ) {
                         var map = mutableMapOf<String, Any>()
                         map.put(
                             key = "premium",

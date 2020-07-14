@@ -12,15 +12,18 @@ import android.os.Handler
 import android.os.Message
 import android.speech.RecognizerIntent
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.bcarrot.common.MyApp
+import com.example.bcarrot.common.SharedPreferencesManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.firebase.firestore.FirebaseFirestore
 import com.paypal.android.sdk.payments.*
 import kotlinx.android.synthetic.main.activity_connect_device.*
 import org.json.JSONException
@@ -36,6 +39,8 @@ class ConnectDeviceActivity : AppCompatActivity() {
     lateinit var paypalConfiguration : PayPalConfiguration
     lateinit var clientClass : ClientClass
     lateinit var myBluetoothAdapter : BluetoothAdapter
+    var db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    lateinit var buttonVideo : Button
 
     companion object {
         var stop = R.string.stop
@@ -82,19 +87,7 @@ class ConnectDeviceActivity : AppCompatActivity() {
             clientClass.sendData("El vehículo gira a la derecha")
         }
             imageViewVoice.setOnClickListener {
-                // Pay Bcoins
-                //bCoinLogic.payBCoins( 300 )
-                var intent : Intent = Intent( RecognizerIntent.ACTION_RECOGNIZE_SPEECH )
-                intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE_MODEL , RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault() )
-                intent.putExtra( RecognizerIntent.EXTRA_PROMPT, "Te estoy escuchando, háblame" )
-
-                // Start intent
-                try {
-                    startActivityForResult( intent, REQUEST_CODE_SPEECH_INPUT )
-                }catch (e : Exception) {
-                    Log.d("Voice", "Ha ocurrido un error - ${e.message}")
-                }
+                userNoPremium()
             }
     }
 
@@ -194,9 +187,92 @@ class ConnectDeviceActivity : AppCompatActivity() {
         }
     }
 
+    fun alertPayBcoins () {
+        val dialog  = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.custom_pay_bcoins, null)
+        buttonVideo = dialogView.findViewById(R.id.buttonGetAnnounce)
+        dialog.setView(dialogView)
+        dialog.setCancelable(true)
+        buttonVideo.setOnClickListener {
+            showAd()
+        }
+        dialog.setPositiveButton("Cerrar", { dialogInterface: DialogInterface, i: Int -> })
+        val customDialog = dialog.create()
+        customDialog.show()
+        customDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            customDialog.dismiss()
+        }
+    }
+
+    fun checkBcoinsVoice () {
+        var coins : Long = 0
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    var data : MutableMap<String, Any> = document.data
+                    coins = data.getValue("bcoins") as Long
+                    if ( coins >= 300 ) {
+                        // Pay Bcoins
+                        bCoinLogic.payBCoins( 300 )
+                        activateVoiceIndication()
+                    } else {
+                        loadAd()
+                        alertPayBcoins()
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(
+                    "Query",
+                    "Error getting documents: ",
+                    exception
+                )
+            }
+    }
+
+    fun activateVoiceIndication() {
+        var intent : Intent = Intent( RecognizerIntent.ACTION_RECOGNIZE_SPEECH )
+        intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE_MODEL , RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault() )
+        intent.putExtra( RecognizerIntent.EXTRA_PROMPT, "Te estoy escuchando, háblame" )
+
+        // Start intent
+        try {
+            startActivityForResult( intent, REQUEST_CODE_SPEECH_INPUT )
+        }catch (e : Exception) {
+            Log.d("Voice", "Ha ocurrido un error - ${e.message}")
+        }
+    }
+
+    fun userNoPremium() {
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    var data : MutableMap<String, Any> = document.data
+                    var isPremium = data.getValue("premium") as Boolean
+                    if ( !isPremium ) {
+                        checkBcoinsVoice()
+                    } else {
+                        activateVoiceIndication()
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(
+                    "Query",
+                    "Error getting documents: ",
+                    exception
+                )
+            }
+    }
+
     fun disableRewardButton() {
-        buttonReward.isEnabled = true
-        buttonReward.background = ContextCompat.getDrawable(this, R.drawable.button )
+        buttonVideo.isEnabled = true
+        buttonVideo.background = ContextCompat.getDrawable(this, R.drawable.button )
     }
 
     private fun closeSession() {
@@ -208,7 +284,6 @@ class ConnectDeviceActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        loadAd()
     }
 
     override fun onDestroy() {

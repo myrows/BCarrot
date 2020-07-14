@@ -8,7 +8,7 @@
     tools:context=".PremiumFragment">
 
     <ImageView
-        android:id="@+id/imageView7"
+        android:id="@+id/imageViewSignOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -31,7 +31,7 @@
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
     <ImageView
-        android:id="@+id/imageView8"
+        android:id="@+id/imageViewBcoins"
         android:layout_width="260dp"
         android:layout_height="50dp"
         android:layout_marginTop="40dp"
@@ -47,11 +47,11 @@
         android:fontFamily="@font/regular"
         android:textColor="@color/backgroundColor"
         android:textSize="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewBcoins"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewBcoins"
         app:layout_constraintHorizontal_bias="0.676"
-        app:layout_constraintStart_toStartOf="@+id/imageView8"
-        app:layout_constraintTop_toTopOf="@+id/imageView8" />
+        app:layout_constraintStart_toStartOf="@+id/imageViewBcoins"
+        app:layout_constraintTop_toTopOf="@+id/imageViewBcoins" />
 
     <TextView
         android:id="@+id/textView17"
@@ -62,9 +62,9 @@
         android:text="Bcoins"
         android:textColor="@color/white"
         android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-        app:layout_constraintStart_toStartOf="@+id/imageView8"
-        app:layout_constraintTop_toTopOf="@+id/imageView8" />
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewBcoins"
+        app:layout_constraintStart_toStartOf="@+id/imageViewBcoins"
+        app:layout_constraintTop_toTopOf="@+id/imageViewBcoins" />
 
     <ImageView
         android:id="@+id/imageViewAvatar"
@@ -77,15 +77,15 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/textViewUserName"
-        android:layout_width="0dp"
+        android:id="@+id/textViewUserEmail"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:fontFamily="@font/regular"
         android:gravity="center"
         android:text="Jess Braint"
         android:textColor="@color/white"
-        android:textSize="30dp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="@+id/imageViewAvatar"
         app:layout_constraintStart_toStartOf="@+id/imageViewAvatar"
         app:layout_constraintTop_toBottomOf="@+id/imageViewAvatar" />

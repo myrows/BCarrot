@@ -29,7 +29,9 @@ import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.paypal.android.sdk.payments.*
 import org.json.JSONException
 import java.math.BigDecimal
@@ -43,11 +45,13 @@ class PremiumFragment : Fragment() {
     lateinit var paypalConfiguration : PayPalConfiguration
     lateinit var avatar : ImageView
     lateinit var userBCoins : TextView
-    lateinit var userN : TextView
     lateinit var mAuth: FirebaseAuth
     lateinit var myBluetoothAdapter : BluetoothAdapter
     lateinit var fButtonChangeName : FloatingActionButton
     lateinit var myFragment : Fragment
+    lateinit var userEmail : TextView
+    lateinit var signOut : ImageView
+    lateinit var infoBcoins : ImageView
     var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     companion object {
@@ -56,6 +60,7 @@ class PremiumFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     @SuppressLint("ResourceType")
@@ -64,15 +69,10 @@ class PremiumFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         var view = inflater.inflate(R.layout.fragment_premium, container, false)
-        myFragment = activity?.supportFragmentManager?.findFragmentById(R.id.fragment)!!
-        avatar = view.findViewById(R.id.imageViewAvatar)
-        userBCoins = view.findViewById(R.id.textViewUserBcoins)
-        userN = view.findViewById(R.id.textViewUserName)
-        fButtonChangeName = view.findViewById(R.id.floatingActionButtonLinkBluetoothName)
+        findIndexesById( view )
         bCoinLogic = BCoinLogic()
         mAuth = FirebaseAuth.getInstance()
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        var currentUser = mAuth.currentUser
         paypalConfiguration = PayPalConfiguration().environment(
             PayPalConfiguration.ENVIRONMENT_PRODUCTION).clientId(getString(R.string.clientId))
 
@@ -87,14 +87,36 @@ class PremiumFragment : Fragment() {
             Toast.makeText(context, "Ahora tu matrícula está vinculada al nombre bluetooth", Toast.LENGTH_LONG).show()
         }
 
+        infoBcoins.setOnClickListener {
+            loadAd()
+            alertSuccess()
+        }
+
+        signOut.setOnClickListener {
+            var intentSignOut = Intent( context, MainActivity::class.java )
+            context?.startActivity( intentSignOut )
+            Firebase.auth.signOut()
+        }
+        userEmail.text = SharedPreferencesManager.getSomeStringValue("user").toString()
+
         // Inflate the layout for this fragment
         return view
+    }
+
+    private fun findIndexesById( view : View ) {
+        myFragment = activity?.supportFragmentManager?.findFragmentById(R.id.fragment)!!
+        avatar = view.findViewById(R.id.imageViewAvatar)
+        userBCoins = view.findViewById(R.id.textViewUserBcoins)
+        fButtonChangeName = view.findViewById(R.id.floatingActionButtonLinkBluetoothName)
+        userEmail = view.findViewById(R.id.textViewUserEmail)
+        signOut = view.findViewById(R.id.imageViewSignOut)
+        infoBcoins = view.findViewById(R.id.imageViewBcoins)
     }
 
     override fun onStart() {
         super.onStart()
         loadAd()
-        alertSuccess()
+        userNoPremium()
     }
 
     private fun alertSuccess () {
@@ -171,8 +193,6 @@ class PremiumFragment : Fragment() {
                         super.onUserEarnedReward(p0)
                         alertRewarded()
                         bCoinLogic.addBCoins( 100 )
-                        // Update Fragment
-                        refresh( PremiumFragment() )
                         // Load next video
                         loadAd()
                     }
@@ -268,8 +288,26 @@ class PremiumFragment : Fragment() {
             }
     }
 
-    fun refresh( fragment: Fragment ) = requireFragmentManager().beginTransaction().apply {
-        commit()
+    fun userNoPremium() {
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    var data : MutableMap<String, Any> = document.data
+                    var isPremium = data.getValue("premium") as Boolean
+                    if ( !isPremium ) {
+                        alertSuccess()
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(
+                    "Query",
+                    "Error getting documents: ",
+                    exception
+                )
+            }
     }
 
     fun disableRewardButton() {

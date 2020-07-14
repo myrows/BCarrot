@@ -13,6 +13,7 @@ import com.example.bcarrot.NavigationActivity
 import com.example.bcarrot.R
 import com.example.bcarrot.common.SharedPreferencesManager
 import com.example.bcarrot.common.SharedPreferencesManager.setSomeStringValue
+import com.example.bcarrot.model.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -31,6 +32,8 @@ import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class Login : AppCompatActivity() {
@@ -40,6 +43,9 @@ class Login : AppCompatActivity() {
     private var mGoogleSignInClient: GoogleSignInClient? = null
     private val db = FirebaseFirestore.getInstance()
     private lateinit var auth: FirebaseAuth
+    var pattern = "yyyy-MM-dd"
+    var simpleDateFormat: SimpleDateFormat = SimpleDateFormat(pattern)
+    var date: String = simpleDateFormat.format(Date())
 
     companion object {
         private const val RC_SIGN_IN = 1
@@ -109,7 +115,6 @@ class Login : AppCompatActivity() {
                 if (task.isSuccessful) {
                     startActivity(intent)
                     var user = mAuth.currentUser
-                    SharedPreferencesManager.setSomeStringValue("user", user!!.email)
                 } else {
                     Toast.makeText(
                         this@Login,
@@ -135,7 +140,6 @@ class Login : AppCompatActivity() {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
                 Log.d("FirebaseAuth", "firebaseAuthWithGoogle:" + account.id)
-                Toast.makeText(this, "Autentificación con éxito", Toast.LENGTH_LONG).show()
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
@@ -151,10 +155,30 @@ class Login : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    var userEmailAuthenticated = auth.currentUser!!.email
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("FirebaseAuth", "signInWithCredential:success")
-                    Toast.makeText(this, "Autentificación con éxito", Toast.LENGTH_LONG).show()
-                    val user = auth.currentUser
+                    var intent = Intent( this@Login, MainActivity::class.java )
+                    startActivity(intent)
+                    var userSignin : User = User(userEmailAuthenticated!!, date, false, 300)
+                    db.collection("users")
+                        .whereEqualTo("email", userEmailAuthenticated)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            if ( documents.size() <= 0 ) {
+                                db.collection("users")
+                                    .add(userSignin)
+                                    .addOnSuccessListener {
+                                    }
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.w(
+                                "Query",
+                                "Error getting documents: ",
+                                exception
+                            )
+                        }
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("FirebaseAuth", "signInWithCredential:failure", task.exception)
@@ -170,18 +194,9 @@ class Login : AppCompatActivity() {
         super.onStart()
         var currentUser: FirebaseUser? = mAuth.currentUser
 
-        Log.d(
-            "User",
-            "${currentUser!!.photoUrl}"
-        )
-
-        Log.d(
-            "User",
-            "${currentUser!!.displayName}"
-        )
-
         currentUser?.let {
             startActivity(intent)
+            SharedPreferencesManager.setSomeStringValue("user", mAuth.currentUser!!.email)
         }
     }
 }

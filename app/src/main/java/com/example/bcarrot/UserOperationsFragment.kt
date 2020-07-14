@@ -21,10 +21,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bcarrot.common.MyApp
+import com.example.bcarrot.common.SharedPreferencesManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_user_operations.*
 import java.io.IOException
 import java.util.*
@@ -40,6 +42,7 @@ class UserOperationsFragment : Fragment() {
     lateinit var mAdView: AdView
     lateinit var myBluetoothAdapter : BluetoothAdapter
     lateinit var textToSpeech : TextToSpeech
+    var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     companion object {
         var APP_NAME : String = "BCarrot"
@@ -139,6 +142,7 @@ class UserOperationsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         deviceAdapter.notifyDataSetChanged()
+        userPremium()
     }
 
     fun getBondedDevices() : MutableSet<BluetoothDevice> {
@@ -165,6 +169,27 @@ class UserOperationsFragment : Fragment() {
         var discoverableIntent = Intent( BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE )
         discoverableIntent.putExtra( BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,3600)
         startActivity( discoverableIntent )
+    }
+    fun userPremium() {
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    var data : MutableMap<String, Any> = document.data
+                    var isPremium = data.getValue("premium") as Boolean
+                    if ( isPremium ) {
+                        mAdView.visibility = View.GONE
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(
+                    "Query",
+                    "Error getting documents: ",
+                    exception
+                )
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
