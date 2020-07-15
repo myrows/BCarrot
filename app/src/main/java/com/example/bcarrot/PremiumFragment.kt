@@ -42,6 +42,7 @@ class PremiumFragment : Fragment() {
     lateinit var bCoinLogic: BCoinLogic
     lateinit var buttonReward : Button
     lateinit var buttonPay : Button
+    lateinit var buttonDonate : Button
     lateinit var paypalConfiguration : PayPalConfiguration
     lateinit var avatar : ImageView
     lateinit var userBCoins : TextView
@@ -74,7 +75,7 @@ class PremiumFragment : Fragment() {
         mAuth = FirebaseAuth.getInstance()
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         paypalConfiguration = PayPalConfiguration().environment(
-            PayPalConfiguration.ENVIRONMENT_PRODUCTION).clientId(getString(R.string.clientId))
+            PayPalConfiguration.ENVIRONMENT_PRODUCTION).clientId("AR6pKwEkquoMvRRVDDWGV8ImBi4upPpjNduxShBvDeuJ3p59CFFfYPdFKmd2_vBPTf_XkA3NTttpAiZP")
 
             avatar?.load("https://randomuser.me/api/portraits/men/4.jpg") {
                 transformations(CircleCropTransformation())
@@ -83,13 +84,12 @@ class PremiumFragment : Fragment() {
         getUserBcoins()
 
         fButtonChangeName.setOnClickListener {
-            getUserBluetoothName()
-            Toast.makeText(context, "Ahora tu matrícula está vinculada al nombre bluetooth", Toast.LENGTH_LONG).show()
+            userPremiumPlateAttach()
         }
 
         infoBcoins.setOnClickListener {
             loadAd()
-            alertSuccess()
+            alertSupport()
         }
 
         signOut.setOnClickListener {
@@ -131,6 +131,27 @@ class PremiumFragment : Fragment() {
         }
         buttonPay.setOnClickListener {
             paypalPayment()
+        }
+        dialog.setPositiveButton("Cerrar", { dialogInterface: DialogInterface, i: Int -> })
+        val customDialog = dialog.create()
+        customDialog.show()
+        customDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            customDialog.dismiss()
+        }
+    }
+
+    private fun alertSupport () {
+        val dialog  = AlertDialog.Builder(context)
+        val dialogView = layoutInflater.inflate(R.layout.custom_donate, null)
+        buttonReward = dialogView.findViewById(R.id.buttonRewardAd)
+        buttonDonate = dialogView.findViewById(R.id.buttonDonate)
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        buttonReward.setOnClickListener {
+            showAd()
+        }
+        buttonDonate.setOnClickListener {
+            paypalPaymentDonate()
         }
         dialog.setPositiveButton("Cerrar", { dialogInterface: DialogInterface, i: Int -> })
         val customDialog = dialog.create()
@@ -206,6 +227,14 @@ class PremiumFragment : Fragment() {
 
     fun paypalPayment() {
         var paypalPayment : PayPalPayment = PayPalPayment( BigDecimal("0.99"), "EUR", "Pago PREMIUM BCarrot", PayPalPayment.PAYMENT_INTENT_SALE )
+        var intent : Intent = Intent(MyApp.context, PaymentActivity::class.java)
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, paypalConfiguration)
+        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, paypalPayment)
+        startActivityForResult( intent, REQUEST_CODE_PAYMENT )
+    }
+
+    fun paypalPaymentDonate() {
+        var paypalPayment : PayPalPayment = PayPalPayment( BigDecimal("4.99"), "EUR", "Donación BCarrot", PayPalPayment.PAYMENT_INTENT_SALE )
         var intent : Intent = Intent(MyApp.context, PaymentActivity::class.java)
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, paypalConfiguration)
         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, paypalPayment)
@@ -297,6 +326,32 @@ class PremiumFragment : Fragment() {
                     var data : MutableMap<String, Any> = document.data
                     var isPremium = data.getValue("premium") as Boolean
                     if ( !isPremium ) {
+                        alertSuccess()
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(
+                    "Query",
+                    "Error getting documents: ",
+                    exception
+                )
+            }
+    }
+
+    fun userPremiumPlateAttach() {
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    var data : MutableMap<String, Any> = document.data
+                    var isPremium = data.getValue("premium") as Boolean
+                    if ( isPremium ) {
+                        getUserBluetoothName()
+                        Toast.makeText(context, "Ahora tu matrícula está vinculada al nombre bluetooth", Toast.LENGTH_LONG).show()
+                    } else {
+                        loadAd()
                         alertSuccess()
                     }
                 }
