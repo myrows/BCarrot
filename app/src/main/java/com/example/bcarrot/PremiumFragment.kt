@@ -6,7 +6,10 @@ import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +20,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import coil.api.load
 import coil.transform.CircleCropTransformation
 import com.example.bcarrot.common.MyApp
@@ -27,14 +29,22 @@ import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FileDownloadTask
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import com.paypal.android.sdk.payments.*
 import org.json.JSONException
+import java.io.File
 import java.math.BigDecimal
+import java.util.*
 
 
 class PremiumFragment : Fragment() {
@@ -54,9 +64,14 @@ class PremiumFragment : Fragment() {
     lateinit var signOut : ImageView
     lateinit var infoBcoins : ImageView
     var db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    lateinit var filePath : Uri
+    lateinit var storage : FirebaseStorage
+    lateinit var storageReference : StorageReference
+    lateinit var reference : StorageReference
 
     companion object {
         var REQUEST_CODE_PAYMENT = 7
+        var REQUEST_CODE_IMAGE = 111
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,12 +89,12 @@ class PremiumFragment : Fragment() {
         bCoinLogic = BCoinLogic()
         mAuth = FirebaseAuth.getInstance()
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        storage = FirebaseStorage.getInstance()
+        storageReference = storage.reference
         paypalConfiguration = PayPalConfiguration().environment(
             PayPalConfiguration.ENVIRONMENT_PRODUCTION).clientId("AR6pKwEkquoMvRRVDDWGV8ImBi4upPpjNduxShBvDeuJ3p59CFFfYPdFKmd2_vBPTf_XkA3NTttpAiZP")
 
-            avatar?.load("https://randomuser.me/api/portraits/men/4.jpg") {
-                transformations(CircleCropTransformation())
-            }
+        checkAvatar()
 
         getUserBcoins()
 
@@ -90,6 +105,10 @@ class PremiumFragment : Fragment() {
         infoBcoins.setOnClickListener {
             loadAd()
             alertSupport()
+        }
+
+        avatar.setOnClickListener {
+            startFileChooser()
         }
 
         signOut.setOnClickListener {
@@ -117,6 +136,168 @@ class PremiumFragment : Fragment() {
         super.onStart()
         loadAd()
         userNoPremium()
+    }
+
+    private fun startFileChooser() {
+        var i = Intent()
+        i.setType( "image/*" )
+        i.setAction( Intent.ACTION_GET_CONTENT )
+        startActivityForResult( Intent.createChooser( i, "Elige una imagen para BCarrot" ), REQUEST_CODE_IMAGE )
+    }
+
+    fun checkAvatar() {
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                for ( document in documents ) {
+                    var data : MutableMap<String, Any> = document.data
+                    var userAvatar = data.getValue("avatar") as String
+                    if (userAvatar.isEmpty() || userAvatar == null) {
+                        avatar.setImageDrawable(requireContext().getDrawable(R.drawable.ic_zanahoria))
+                    } else {
+                        getUserAvatar()
+                    }
+                }
+
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Query", "Error getting documents: ", exception)
+            }
+    }
+
+    fun manageAvatar ( imageName : String ) {
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                for ( document in documents ) {
+                    var data : MutableMap<String, Any> = document.data
+                    var avatar = data.getValue("avatar") as String
+                    if (avatar.isEmpty() || avatar == null) {
+                        //setUserAvatar( imageName )
+                    } else {
+                        //updateUserAvatar( imageName )
+                    }
+                }
+
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Query", "Error getting documents: ", exception)
+            }
+    }
+
+    fun setUserAvatar( imageName : String ) {
+        val avatar = hashMapOf(
+            "avatar" to "$imageName"
+        )
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                    for ( document in documents ) {
+                        db.collection("users").document(document.id).set(avatar)
+                            .addOnSuccessListener {
+
+                            }
+                            .addOnFailureListener{
+
+                            }
+                    }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(
+                    "Query",
+                    "Error getting documents: ",
+                    exception
+                )
+            }
+    }
+
+    fun updateUserAvatar ( imageName: String ) {
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    var map = mutableMapOf<String, Any>()
+                    map.put(
+                        key = "avatar",
+                        value = imageName
+                    )
+                    db.collection("users")
+                        .document(document.id).update(map)
+                        .addOnSuccessListener {
+                        }.addOnFailureListener {
+                            Log.d(
+                                "Update",
+                                "Ha ocurrido un error al actualizar el documento"
+                            )
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(
+                    "Query",
+                    "Error getting documents: ",
+                    exception
+                )
+            }
+    }
+
+    fun getUserAvatar() {
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    var data : MutableMap<String, Any> = document.data
+                    var avatar : String = data.getValue("avatar") as String
+                    getFile( avatar )
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(
+                    "Query",
+                    "Error getting documents: ",
+                    exception
+                )
+            }
+    }
+
+    private fun uploadFile() {
+        var uuidRandom : String = UUID.randomUUID().toString()
+        if ( filePath != null ) {
+            reference = storageReference.child( uuidRandom )
+            reference.putFile(filePath)
+                .addOnSuccessListener(object : OnSuccessListener<UploadTask.TaskSnapshot?> {
+                    override fun onSuccess(p0: UploadTask.TaskSnapshot?) {
+                        updateUserAvatar( uuidRandom )
+                    }
+                })
+                .addOnFailureListener(object : OnFailureListener {
+                    override fun onFailure(p0: java.lang.Exception) {
+                    }
+                })
+        }
+    }
+
+    fun getFile( image : String ) {
+        var storageReference : StorageReference = storage.getReferenceFromUrl("gs://bcarrot-21b85.appspot.com/").child(image)
+        var file : File = File.createTempFile("image", "jpg")
+        storageReference.getFile(file)
+            .addOnSuccessListener(object : OnSuccessListener<FileDownloadTask.TaskSnapshot> {
+                override fun onSuccess(p0: FileDownloadTask.TaskSnapshot) {
+                    var bitmap = BitmapFactory.decodeFile( file.absolutePath )
+                    avatar.load( bitmap ) {
+                        transformations(CircleCropTransformation())
+                    }
+                }
+            })
+            .addOnFailureListener(object : OnFailureListener {
+                override fun onFailure(p0: java.lang.Exception) {
+                }
+            })
     }
 
     private fun alertSuccess () {
@@ -243,22 +424,35 @@ class PremiumFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if ( requestCode == REQUEST_CODE_PAYMENT ) {
-            if ( resultCode == Activity.RESULT_OK ) {
-                var confirm : PaymentConfirmation? = data?.getParcelableExtra( PaymentActivity.EXTRA_RESULT_CONFIRMATION )
-                if ( confirm != null ) {
-                    try {
-                        alertPremium()
-                        bCoinLogic.getPremium()
+        when ( requestCode ) {
+            REQUEST_CODE_PAYMENT -> {
+                if ( resultCode == Activity.RESULT_OK ) {
+                    var confirm : PaymentConfirmation? = data?.getParcelableExtra( PaymentActivity.EXTRA_RESULT_CONFIRMATION )
+                    if ( confirm != null ) {
+                        try {
+                            alertPremium()
+                            bCoinLogic.getPremium()
 
-                    }catch (e : JSONException) {
-                        Log.d("PayPalError", "${e.message}")
+                        }catch (e : JSONException) {
+                            Log.d("PayPalError", "${e.message}")
+                        }
                     }
+                } else if ( resultCode == Activity.RESULT_CANCELED ) {
+                    Toast.makeText(context, "Pago cancelado", Toast.LENGTH_LONG).show()
+                } else if ( resultCode == PaymentActivity.RESULT_EXTRAS_INVALID ) {
+                    Toast.makeText(context, "Ha ocurrido un error", Toast.LENGTH_LONG).show()
                 }
-            } else if ( resultCode == Activity.RESULT_CANCELED ) {
-                Toast.makeText(context, "Pago cancelado", Toast.LENGTH_LONG).show()
-            } else if ( resultCode == PaymentActivity.RESULT_EXTRAS_INVALID ) {
-                Toast.makeText(context, "Ha ocurrido un error", Toast.LENGTH_LONG).show()
+            }
+            REQUEST_CODE_IMAGE -> {
+                if ( resultCode == Activity.RESULT_OK ) {
+                    filePath = data?.data!!
+                    var bitmap = MediaStore.Images.Media.getBitmap( requireActivity().contentResolver, filePath )
+                    avatar.setImageBitmap(bitmap)
+                    avatar.load(bitmap) {
+                        transformations(CircleCropTransformation())
+                    }
+                    uploadFile()
+                }
             }
         }
     }

@@ -160,7 +160,7 @@ class Login : AppCompatActivity() {
                     Log.d("FirebaseAuth", "signInWithCredential:success")
                     var intent = Intent( this@Login, MainActivity::class.java )
                     startActivity(intent)
-                    var userSignin : User = User(userEmailAuthenticated!!, date, false, 300)
+                    var userSignin : User = User(userEmailAuthenticated!!, date, false, 300, "")
                     db.collection("users")
                         .whereEqualTo("email", userEmailAuthenticated)
                         .get()

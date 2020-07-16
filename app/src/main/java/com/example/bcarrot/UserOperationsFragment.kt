@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -29,6 +30,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_user_operations.*
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -42,6 +44,7 @@ class UserOperationsFragment : Fragment() {
     lateinit var mAdView: AdView
     lateinit var myBluetoothAdapter : BluetoothAdapter
     lateinit var textToSpeech : TextToSpeech
+    lateinit var imageInformation : ImageView
     var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     companion object {
@@ -76,6 +79,7 @@ class UserOperationsFragment : Fragment() {
         var view = inflater.inflate(R.layout.fragment_user_operations, container, false)
         recyclerViewCustom = view.findViewById(R.id.recyclerViewDevicesOperations)
         floatingActionButton = view.findViewById(R.id.floatingActionButtonBluetooth)
+        imageInformation = view.findViewById(R.id.imageViewInf)
         textToSpeech= TextToSpeech(MyApp.context, TextToSpeech.OnInitListener {
             if ( it == TextToSpeech.SUCCESS ) {
                 textToSpeech.language = Locale.getDefault()
@@ -91,6 +95,11 @@ class UserOperationsFragment : Fragment() {
             val sendIntent: Intent = Intent()
             sendIntent.action = android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
             startActivity(sendIntent)
+        }
+
+        imageInformation.setOnClickListener {
+            var intent : Intent = Intent( context, InfoActivity::class.java )
+            startActivity( intent )
         }
         recyclerViewCustom.apply {
 

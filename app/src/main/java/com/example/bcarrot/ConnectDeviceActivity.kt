@@ -6,10 +6,12 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.provider.MediaStore
 import android.speech.RecognizerIntent
 import android.util.Log
 import android.view.View
@@ -88,6 +90,39 @@ class ConnectDeviceActivity : AppCompatActivity() {
         }
             imageViewVoice.setOnClickListener {
                 userNoPremium()
+            }
+        vehiclePlate()
+    }
+
+    private fun vehiclePlate() {
+        db.collection("users")
+            .whereEqualTo("email", SharedPreferencesManager.getSomeStringValue("user").toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    Log.d("Query", "${document.id} => ${document.data}")
+                    db.collection("users").document(document.id).collection("vehicle")
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for ( document in documents ) {
+                                var data : MutableMap<String, Any> = document.data
+                                var plate : String = data.getValue("plate") as String
+                                if ( plate.isNotEmpty() || plate != null ) {
+                                    textViewVehicleName.text = plate
+                                } else {
+                                    textViewVehicleName.text = "Sin matrícula"
+                                }
+                            }
+
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.w("Query", "Error getting documents: ", exception)
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Query", "Error getting documents: ", exception)
+                Toast.makeText(this@ConnectDeviceActivity, "Error al crear el vehículo", Toast.LENGTH_LONG).show()
             }
     }
 

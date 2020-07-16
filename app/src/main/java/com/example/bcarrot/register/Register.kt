@@ -133,7 +133,7 @@ class Register : AppCompatActivity() {
                     Log.d("FirebaseAuth", "signInWithCredential:success")
                     var intent = Intent( this@Register, MainActivity::class.java )
                     startActivity(intent)
-                    var userSignin : User = User(userEmailAuthenticated!!.toLowerCase(), date, false, 300)
+                    var userSignin : User = User(userEmailAuthenticated!!.toLowerCase(), date, false, 300, "")
                     db.collection("users")
                         .whereEqualTo("email", userEmailAuthenticated)
                         .get()
@@ -167,7 +167,7 @@ class Register : AppCompatActivity() {
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this@Register) { task ->
                 if (task.isSuccessful) {
-                    var userSignin : User = User(email.toLowerCase(), date, false, 300)
+                    var userSignin : User = User(email.toLowerCase(), date, false, 300, "")
                     db.collection("users")
                         .add(userSignin)
                         .addOnSuccessListener {
