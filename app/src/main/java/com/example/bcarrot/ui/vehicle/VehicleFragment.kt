@@ -1,4 +1,4 @@
-package com.example.bcarrot
+package com.example.bcarrot.ui.vehicle
 
 import android.os.Bundle
 import android.util.Log
@@ -10,19 +10,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
+import com.example.bcarrot.R
 import com.example.bcarrot.common.SharedPreferencesManager
 import com.example.bcarrot.model.Vehicle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.model.Document
-import com.google.protobuf.Empty
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.fragment_vehicle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.chrono.HijrahChronology
 
 class VehicleFragment : Fragment() {
     lateinit var edTextVehicle : EditText

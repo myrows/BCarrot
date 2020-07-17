@@ -8,12 +8,12 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.bcarrot.UserOperationsFragment"
+        android:name="com.example.bcarrot.ui.devices.UserOperationsFragment"
         android:label="UserOperations" />
 
     <activity
         android:id="@+id/navigation_car"
-        android:name="com.example.bcarrot.ConnectDeviceActivity"
+        android:name="com.example.bcarrot.ui.connect.ConnectDeviceActivity"
         android:label="ConnectDevice"/>
 
 </navigation>

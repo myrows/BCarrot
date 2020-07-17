@@ -1,4 +1,4 @@
-package com.example.bcarrot
+package com.example.bcarrot.ui.premium
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -22,8 +22,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import coil.api.load
 import coil.transform.CircleCropTransformation
+import com.example.bcarrot.MainActivity
+import com.example.bcarrot.R
 import com.example.bcarrot.common.MyApp
 import com.example.bcarrot.common.SharedPreferencesManager
+import com.example.bcarrot.logic.BCoinLogic
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -142,7 +145,9 @@ class PremiumFragment : Fragment() {
         var i = Intent()
         i.setType( "image/*" )
         i.setAction( Intent.ACTION_GET_CONTENT )
-        startActivityForResult( Intent.createChooser( i, "Elige una imagen para BCarrot" ), REQUEST_CODE_IMAGE )
+        startActivityForResult( Intent.createChooser( i, "Elige una imagen para BCarrot" ),
+            REQUEST_CODE_IMAGE
+        )
     }
 
     fun checkAvatar() {
@@ -411,7 +416,9 @@ class PremiumFragment : Fragment() {
         var intent : Intent = Intent(MyApp.context, PaymentActivity::class.java)
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, paypalConfiguration)
         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, paypalPayment)
-        startActivityForResult( intent, REQUEST_CODE_PAYMENT )
+        startActivityForResult( intent,
+            REQUEST_CODE_PAYMENT
+        )
     }
 
     fun paypalPaymentDonate() {
@@ -419,7 +426,9 @@ class PremiumFragment : Fragment() {
         var intent : Intent = Intent(MyApp.context, PaymentActivity::class.java)
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, paypalConfiguration)
         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, paypalPayment)
-        startActivityForResult( intent, REQUEST_CODE_PAYMENT )
+        startActivityForResult( intent,
+            REQUEST_CODE_PAYMENT
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -561,6 +570,8 @@ class PremiumFragment : Fragment() {
 
     fun disableRewardButton() {
         buttonReward.isEnabled = true
-        buttonReward.background = ContextCompat.getDrawable(requireContext(), R.drawable.button )
+        buttonReward.background = ContextCompat.getDrawable(requireContext(),
+            R.drawable.button
+        )
     }
 }

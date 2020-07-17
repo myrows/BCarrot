@@ -1,25 +1,25 @@
-package com.example.bcarrot
+package com.example.bcarrot.ui.connect
 
 import android.app.Activity
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.content.DialogInterface
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.provider.MediaStore
 import android.speech.RecognizerIntent
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.example.bcarrot.ui.premium.PremiumFragment
+import com.example.bcarrot.R
 import com.example.bcarrot.common.MyApp
 import com.example.bcarrot.common.SharedPreferencesManager
+import com.example.bcarrot.connection.ClientClass
+import com.example.bcarrot.logic.BCoinLogic
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -72,7 +72,7 @@ class ConnectDeviceActivity : AppCompatActivity() {
         var addressDevice : String = intent.extras!!.get("deviceBcarrot").toString()
         var device = myBluetoothAdapter.getRemoteDevice(addressDevice)
         // Client connection
-        clientClass = ClientClass( device, handler )
+        clientClass = ClientClass(device, handler)
         clientClass.start()
 
         // Car actions
@@ -275,7 +275,9 @@ class ConnectDeviceActivity : AppCompatActivity() {
 
         // Start intent
         try {
-            startActivityForResult( intent, REQUEST_CODE_SPEECH_INPUT )
+            startActivityForResult( intent,
+                REQUEST_CODE_SPEECH_INPUT
+            )
         }catch (e : Exception) {
             Log.d("Voice", "Ha ocurrido un error - ${e.message}")
         }
@@ -307,7 +309,9 @@ class ConnectDeviceActivity : AppCompatActivity() {
 
     fun disableRewardButton() {
         buttonVideo.isEnabled = true
-        buttonVideo.background = ContextCompat.getDrawable(this, R.drawable.button )
+        buttonVideo.background = ContextCompat.getDrawable(this,
+            R.drawable.button
+        )
     }
 
     private fun closeSession() {
@@ -335,7 +339,9 @@ class ConnectDeviceActivity : AppCompatActivity() {
         var intent : Intent = Intent(MyApp.context, PaymentActivity::class.java)
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, paypalConfiguration)
         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, paypalPayment)
-        startActivityForResult( intent, PremiumFragment.REQUEST_CODE_PAYMENT)
+        startActivityForResult( intent,
+            PremiumFragment.REQUEST_CODE_PAYMENT
+        )
     }
 
     private fun alertPremium () {

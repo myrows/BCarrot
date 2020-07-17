@@ -1,8 +1,7 @@
-package com.example.bcarrot
+package com.example.bcarrot.connection
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
-import android.content.Context
 import android.os.Handler
 import android.os.Message
 import android.util.Log
@@ -25,14 +24,17 @@ class ClientClass(var device: BluetoothDevice, var handler : Handler) : Thread()
         try {
             socket.connect()
             var message : Message = Message.obtain()
-            message.what = STATE_CONNECTED
+            message.what =
+                STATE_CONNECTED
             handler.sendMessage( message )
-            sendReceive = SendReceive(socket, handler)
+            sendReceive =
+                SendReceive(socket, handler)
             sendReceive.start()
         } catch (e : IOException) {
             e.printStackTrace()
             var message : Message = Message.obtain()
-            message.what = STATE_CONNECTION_FAILED
+            message.what =
+                STATE_CONNECTION_FAILED
             handler.sendMessage( message )
         }
     }

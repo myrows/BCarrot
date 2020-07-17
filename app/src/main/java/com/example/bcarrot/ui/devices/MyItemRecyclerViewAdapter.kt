@@ -1,19 +1,16 @@
-package com.example.bcarrot
+package com.example.bcarrot.ui.devices
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Message
-import android.speech.tts.TextToSpeech
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.bcarrot.common.MyApp
+import com.example.bcarrot.R
+import com.example.bcarrot.ui.connect.ConnectDeviceActivity
 import kotlinx.android.synthetic.main.fragment_item.view.*
 import java.util.*
 import kotlin.collections.ArrayList

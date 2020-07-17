@@ -24,7 +24,7 @@
     <item
         android:id="@+id/premium"
         android:icon="@drawable/ic_premium"
-        android:title="@string/premium"
+        android:title="@string/perfil"
         app:cnb_backgroundColor="@color/orangeCarrot"
         app:cnb_iconColor="#FFFF"
         app:cnb_iconTintMode="src_in"

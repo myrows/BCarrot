@@ -1,24 +1,20 @@
-package com.example.bcarrot
+package com.example.bcarrot.logic
 
-import android.content.Intent
-import android.graphics.Bitmap
 import android.media.MediaPlayer
 import android.util.Log
-import androidx.core.content.contentValuesOf
+import com.example.bcarrot.R
 import com.example.bcarrot.common.MyApp
 import com.example.bcarrot.common.SharedPreferencesManager
 import com.google.firebase.firestore.FirebaseFirestore
-import com.paypal.android.sdk.payments.PayPalConfiguration
-import com.paypal.android.sdk.payments.PayPalPayment
-import com.paypal.android.sdk.payments.PayPalService
-import com.paypal.android.sdk.payments.PaymentActivity
-import kotlinx.coroutines.withContext
-import java.math.BigDecimal
 
 class BCoinLogic {
     var db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    var mediaPlayer : MediaPlayer = MediaPlayer.create(MyApp.context, R.raw.coins_reward_sound)
-    var mediaPlayerPay : MediaPlayer = MediaPlayer.create(MyApp.context, R.raw.get_bcoins)
+    var mediaPlayer : MediaPlayer = MediaPlayer.create(MyApp.context,
+        R.raw.coins_reward_sound
+    )
+    var mediaPlayerPay : MediaPlayer = MediaPlayer.create(MyApp.context,
+        R.raw.get_bcoins
+    )
     var coins : Long = 0
 
     fun addBCoins ( value : Long ) {

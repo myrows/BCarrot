@@ -1,4 +1,4 @@
-package com.example.bcarrot
+package com.example.bcarrot.ui.info
 
 import android.os.Bundle
 import android.text.Html
@@ -6,6 +6,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import com.example.bcarrot.R
+import com.example.bcarrot.SliderAdapter
 
 
 class InfoActivity : AppCompatActivity() {

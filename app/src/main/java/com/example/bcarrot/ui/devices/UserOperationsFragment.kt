@@ -1,11 +1,7 @@
-package com.example.bcarrot
+package com.example.bcarrot.ui.devices
 
-import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothServerSocket
-import android.bluetooth.BluetoothSocket
-import android.content.BroadcastReceiver
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -21,22 +17,20 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bcarrot.ui.info.InfoActivity
+import com.example.bcarrot.R
 import com.example.bcarrot.common.MyApp
 import com.example.bcarrot.common.SharedPreferencesManager
+import com.example.bcarrot.connection.ServerClass
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.fragment_user_operations.*
-import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 
 
 class UserOperationsFragment : Fragment() {
-    private var REQUEST_CODE_ENABLED : Int = 0
-    lateinit var enablingIntent : Intent
     private var columnCount = 1
     lateinit var recyclerViewCustom : RecyclerView
     lateinit var  deviceAdapter : MyItemRecyclerViewAdapter
@@ -62,12 +56,13 @@ class UserOperationsFragment : Fragment() {
         //setContentView(R.layout.fragment_user_operations)
 
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        REQUEST_CODE_ENABLED = 1
-        enablingIntent = Intent( BluetoothAdapter.ACTION_REQUEST_ENABLE )
         bluetoothEnable()
 
         //  Activate ServerSocket
-        var socketConnection = ServerClass( myBluetoothAdapter, handler )
+        var socketConnection = ServerClass(
+            myBluetoothAdapter,
+            handler
+        )
         socketConnection.start()
     }
 
@@ -103,7 +98,8 @@ class UserOperationsFragment : Fragment() {
         }
         recyclerViewCustom.apply {
 
-            deviceAdapter = MyItemRecyclerViewAdapter()
+            deviceAdapter =
+                MyItemRecyclerViewAdapter()
 
             // Set the adapter
             with(recyclerViewCustom) {
@@ -168,13 +164,6 @@ class UserOperationsFragment : Fragment() {
     }
 
     fun bluetoothEnable () {
-        myBluetoothAdapter?.let {
-            if (!myBluetoothAdapter.isEnabled) startActivityForResult(
-                enablingIntent,
-                REQUEST_CODE_ENABLED
-            )
-        }
-
         var discoverableIntent = Intent( BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE )
         discoverableIntent.putExtra( BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,3600)
         startActivity( discoverableIntent )
@@ -199,17 +188,6 @@ class UserOperationsFragment : Fragment() {
                     exception
                 )
             }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if ( requestCode == REQUEST_CODE_ENABLED ) {
-            if ( resultCode == Activity.RESULT_OK ) {
-                Log.d("Bluetooth", "Enabled")
-            } else if ( resultCode == Activity.RESULT_CANCELED ) {
-                Log.d("Bluetooth", "Disabled")
-            }
-        }
     }
 
 

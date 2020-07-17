@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_car"
-    tools:context=".ConnectDeviceActivity">
+    tools:context=".ui.connect.ConnectDeviceActivity">
 
     <TextView
         android:id="@+id/textViewVehicleName"
@@ -16,6 +16,7 @@
         android:layout_marginEnd="24dp"
         android:fontFamily="@font/regular"
         android:gravity="center"
+        android:text="Sin matrícula"
         android:textColor="@color/white"
         android:textSize="40dp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,4 +1,4 @@
-package com.example.bcarrot
+package com.example.bcarrot.connection
 
 import android.bluetooth.BluetoothSocket
 import android.os.Handler
@@ -33,7 +33,7 @@ class SendReceive(private val bluetoothSocket: BluetoothSocket, var handler: Han
         while (true) {
             try {
                 bytes = inputStream!!.read(buffer)
-                handler.obtainMessage( STATE_MESSAGE_RECEIVED, bytes, -1, buffer).sendToTarget()
+                handler.obtainMessage(STATE_MESSAGE_RECEIVED, bytes, -1, buffer).sendToTarget()
             } catch (e: IOException) {
                 e.printStackTrace()
             }

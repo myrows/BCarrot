@@ -16,13 +16,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name=".InfoActivity" />
-        <activity android:name=".RewardActivity" />
-        <activity android:name=".NavigationActivity" />
-        <activity android:name=".ConnectDeviceActivity" />
+        <activity android:name=".ui.info.InfoActivity" />
+        <activity android:name=".logic.RewardActivity" />
+        <activity android:name=".navigation.NavigationActivity" />
+        <activity android:name=".ui.connect.ConnectDeviceActivity" />
         <activity android:name=".register.Register" />
         <activity
-            android:name=".UserOperationsFragment"
+            android:name=".ui.devices.UserOperationsFragment"
             tools:ignore="Instantiatable" />
         <activity android:name=".register.Login" />
         <activity android:name=".MainActivity" >
