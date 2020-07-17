@@ -77,7 +77,7 @@ class UserOperationsFragment : Fragment() {
         mAdView = view.findViewById(R.id.adView);
         val adView = AdView(context)
         adView.adSize = AdSize.BANNER
-        adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
+        adView.adUnitId = "ca-app-pub-4204713758500577/4053766909"
         val adRequest: AdRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
         floatingActionButton.setOnClickListener {

@@ -176,7 +176,7 @@ class ConnectDeviceActivity : AppCompatActivity() {
     }
 
     fun loadAd() {
-        rewardedAd = RewardedAd(this, "ca-app-pub-3940256099942544/5224354917" )
+        rewardedAd = RewardedAd(this, "ca-app-pub-4204713758500577/6548176106" )
         var callback : RewardedAdLoadCallback = object : RewardedAdLoadCallback() {
             override fun onRewardedAdFailedToLoad(p0: Int) {
                 super.onRewardedAdFailedToLoad(p0)
