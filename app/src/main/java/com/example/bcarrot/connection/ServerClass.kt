@@ -53,4 +53,5 @@ class ServerClass(var myBluetoothAdapter : BluetoothAdapter, var handler : Handl
             Log.e("SocketClose", "Could not close the connect socket", e)
         }
     }
+
 }

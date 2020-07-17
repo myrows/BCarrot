@@ -39,6 +39,7 @@ class UserOperationsFragment : Fragment() {
     lateinit var myBluetoothAdapter : BluetoothAdapter
     lateinit var textToSpeech : TextToSpeech
     lateinit var imageInformation : ImageView
+    lateinit var socketConnection : ServerClass
     var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     companion object {
@@ -57,13 +58,6 @@ class UserOperationsFragment : Fragment() {
 
         myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         bluetoothEnable()
-
-        //  Activate ServerSocket
-        var socketConnection = ServerClass(
-            myBluetoothAdapter,
-            handler
-        )
-        socketConnection.start()
     }
 
     override fun onCreateView(
@@ -146,6 +140,15 @@ class UserOperationsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        //  Activate ServerSocket
+        //  Activate ServerSocket
+        if ( this@UserOperationsFragment::socketConnection.isInitialized ) {
+            socketConnection.cancel()
+        }
+        socketConnection = ServerClass(
+            myBluetoothAdapter,
+            handler)
+        socketConnection.start()
         deviceAdapter.notifyDataSetChanged()
         userPremium()
     }

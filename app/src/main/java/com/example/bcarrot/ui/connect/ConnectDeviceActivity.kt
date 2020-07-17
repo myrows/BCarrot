@@ -19,6 +19,7 @@ import com.example.bcarrot.R
 import com.example.bcarrot.common.MyApp
 import com.example.bcarrot.common.SharedPreferencesManager
 import com.example.bcarrot.connection.ClientClass
+import com.example.bcarrot.connection.ServerClass
 import com.example.bcarrot.logic.BCoinLogic
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.rewarded.RewardItem
@@ -40,6 +41,7 @@ class ConnectDeviceActivity : AppCompatActivity() {
     lateinit var rewardedAd : RewardedAd
     lateinit var paypalConfiguration : PayPalConfiguration
     lateinit var clientClass : ClientClass
+    lateinit var serverClass : ServerClass
     lateinit var myBluetoothAdapter : BluetoothAdapter
     var db: FirebaseFirestore = FirebaseFirestore.getInstance()
     lateinit var buttonVideo : Button
@@ -73,6 +75,7 @@ class ConnectDeviceActivity : AppCompatActivity() {
         var device = myBluetoothAdapter.getRemoteDevice(addressDevice)
         // Client connection
         clientClass = ClientClass(device, handler)
+        serverClass = ServerClass( myBluetoothAdapter, handler )
         clientClass.start()
 
         // Car actions
@@ -92,6 +95,7 @@ class ConnectDeviceActivity : AppCompatActivity() {
                 userNoPremium()
             }
         vehiclePlate()
+        closeSession()
     }
 
     private fun vehiclePlate() {
@@ -316,9 +320,14 @@ class ConnectDeviceActivity : AppCompatActivity() {
 
     private fun closeSession() {
         floatingActionButtonBluetoothDisconnect.setOnClickListener {
+            closeThread()
             onBackPressed()
-            clientClass.cancel()
         }
+    }
+
+    private fun closeThread() {
+        clientClass.cancel()
+        serverClass.cancel()
     }
 
     override fun onStart() {
@@ -327,6 +336,7 @@ class ConnectDeviceActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        closeThread()
     }
 
     override fun onStop() {
